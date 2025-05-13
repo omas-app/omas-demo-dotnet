@@ -1,0 +1,2237 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Omas Api",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.omas.app",
+      "description": "Production Server"
+    }
+  ],
+  "paths": {
+    "/Info": {
+      "get": {
+        "tags": [
+          "Info"
+        ],
+        "operationId": "Info",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{parent}:placeOrder": {
+      "post": {
+        "tags": [
+          "OmasOrderService"
+        ],
+        "summary": "submit and charge order",
+        "operationId": "placeOrderV1",
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "path",
+            "description": "Format: vendors/{vendor}",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri-reference"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The request received from the client.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlaceOrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaceOrderResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{name}:confirm": {
+      "post": {
+        "tags": [
+          "OmasOrderService"
+        ],
+        "summary": "acknowledge, accept or decline order",
+        "operationId": "confirmOrderV1",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "the name of order to acknowledge\r\nFormat: vendors/{vendor}/orders/{order}",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri-reference"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmOrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fulfillment"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{name}:process": {
+      "post": {
+        "tags": [
+          "OmasOrderService"
+        ],
+        "summary": "advance order process state: sourcing, assembly, picking & packaging",
+        "operationId": "processOrderV1",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "the name of order to process\r\nFormat: vendors/{vendor}/orders/{order}",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri-reference"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessOrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fulfillment"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{name}:deliver": {
+      "post": {
+        "tags": [
+          "OmasOrderService"
+        ],
+        "summary": "advance order delivery state: shipment & delivery",
+        "operationId": "deliverOrderV1",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "the name of order to acknowledge\r\nFormat: vendors/{vendor}/orders/{order}",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri-reference"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliverOrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fulfillment"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{name}:complete": {
+      "post": {
+        "tags": [
+          "OmasOrderService"
+        ],
+        "summary": "finalize order state",
+        "operationId": "completeOrderV1",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "the name of order to acknowledge\r\nFormat: vendors/{vendor}/orders/{order}",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri-reference"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteOrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fulfillment"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{parent}/orders:poll": {
+      "get": {
+        "tags": [
+          "OmasOrderService"
+        ],
+        "summary": "get modified orders",
+        "operationId": "pollOrdersV1",
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "path",
+            "description": "The parent, which owns the orders.\r\nFormat: vendors/{vendor}",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "timeout",
+            "in": "query",
+            "schema": {
+              "pattern": "^\\d+s$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PollOrdersResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{parent}/orders:monitor": {
+      "get": {
+        "tags": [
+          "OmasOrderService"
+        ],
+        "summary": "stream modified orders",
+        "operationId": "monitorOrdersV1",
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "path",
+            "description": "The parent, which owns the orders.\r\nFormat: vendors/{vendor}",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startSeq",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "keepAlive",
+            "in": "query",
+            "schema": {
+              "pattern": "^\\d+s$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "\r\n**streaming response** in `json-lines`",
+            "content": {
+              "application/jsonl": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{name}": {
+      "get": {
+        "tags": [
+          "OmasOrderService"
+        ],
+        "summary": "get order (AIP-131)",
+        "operationId": "getOrderV1",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "The name of the order to retrieve.\r\nFormat: vendors/{vendor}/orders/{order}",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fulfillment"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{parent}/orders": {
+      "get": {
+        "tags": [
+          "OmasOrderService"
+        ],
+        "summary": "list orders (AIP-134)",
+        "operationId": "listOrdersV1",
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "path",
+            "description": "The parent, which owns this collection of orders.\r\nFormat: vendors/{vendor}",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOrdersResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{fulfillment.name}": {
+      "patch": {
+        "tags": [
+          "OmasOrderService"
+        ],
+        "summary": "update order (AIP-132)",
+        "operationId": "updateOrderV1",
+        "parameters": [
+          {
+            "name": "fulfillment.name",
+            "in": "path",
+            "description": "resource name: vendors/{vendor}/orders/{order}",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri-reference"
+            }
+          },
+          {
+            "name": "updateMask",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The order to update.\r\n            \r\nThe fulfillment's `name` field is used to identify the order to be updated.\r\nFormat: vendors/{vendor}/orders/{order}",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Fulfillment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fulfillment"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/store/monitor": {
+      "get": {
+        "tags": [
+          "OmasStoreService"
+        ],
+        "operationId": "monitorStoreV1",
+        "parameters": [
+          {
+            "name": "filters",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "startSeq",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "\r\n**streaming response** in `json-lines`",
+            "content": {
+              "application/jsonl": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActorType": {
+        "enum": [
+          "ACTOR_TYPE_UNSPECIFIED",
+          "SYSTEM",
+          "TENANT",
+          "VENDOR",
+          "USER"
+        ],
+        "type": "string"
+      },
+      "Any": {
+        "required": [
+          "@type"
+        ],
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {}
+      },
+      "Assembly": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "AvailabilityTime": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayOfWeek"
+            }
+          },
+          "holiday": {
+            "type": "boolean"
+          },
+          "fromTime": {
+            "$ref": "#/components/schemas/TimeOfDay"
+          },
+          "toTime": {
+            "$ref": "#/components/schemas/TimeOfDay"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Cancelation": {
+        "type": "object",
+        "properties": {
+          "actor": {
+            "$ref": "#/components/schemas/ActorType"
+          },
+          "reason": {
+            "type": "string",
+            "description": "todo fee"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompleteOrderRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "the name of order to acknowledge\r\nFormat: vendors/{vendor}/orders/{order}",
+            "format": "uri-reference"
+          },
+          "settlement": {
+            "$ref": "#/components/schemas/Settlement"
+          },
+          "cancel": {
+            "type": "string",
+            "description": "cancelation reason"
+          }
+        },
+        "additionalProperties": false,
+        "description": "`content` is one of: **settlement**, **cancel**"
+      },
+      "ConfirmOrderRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "the name of order to acknowledge\r\nFormat: vendors/{vendor}/orders/{order}",
+            "format": "uri-reference"
+          },
+          "ack": {
+            "$ref": "#/components/schemas/Empty"
+          },
+          "accept": {
+            "$ref": "#/components/schemas/ConfirmOrderRequestAccept"
+          },
+          "decline": {
+            "type": "string",
+            "description": "decline reason"
+          }
+        },
+        "additionalProperties": false,
+        "description": "`content` is one of: **ack**, **accept**, **decline**"
+      },
+      "ConfirmOrderRequestAccept": {
+        "type": "object",
+        "properties": {
+          "packagingTime": {
+            "title": "packaging_time",
+            "type": "string",
+            "description": "packaging time estimate",
+            "format": "date-time"
+          },
+          "deliveryTime": {
+            "title": "delivery_time",
+            "type": "string",
+            "description": "delivery time estimate",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "title": "display_name",
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "postalAddr": {
+            "title": "postal_address",
+            "type": "string"
+          },
+          "org": {
+            "title": "organisation",
+            "type": "string"
+          },
+          "vatNr": {
+            "title": "vat_number",
+            "type": "string"
+          },
+          "regNr": {
+            "title": "reg_number",
+            "type": "string"
+          },
+          "iban": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "DataMessage": {
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "$ref": "#/components/schemas/Vendor"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "fulfillment": {
+            "$ref": "#/components/schemas/Fulfillment"
+          }
+        },
+        "additionalProperties": false,
+        "description": "oneof container"
+      },
+      "DayOfWeek": {
+        "enum": [
+          "DAY_OF_WEEK_UNSPECIFIED",
+          "MONDAY",
+          "TUESDAY",
+          "WEDNESDAY",
+          "THURSDAY",
+          "FRIDAY",
+          "SATURDAY",
+          "SUNDAY"
+        ],
+        "type": "string"
+      },
+      "DeliverOrderRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "the name of order to acknowledge\r\nFormat: vendors/{vendor}/orders/{order}",
+            "format": "uri-reference"
+          },
+          "shipment": {
+            "$ref": "#/components/schemas/Shipment"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/Delivery"
+          },
+          "completed": {
+            "type": "boolean",
+            "description": "step completed"
+          }
+        },
+        "additionalProperties": false,
+        "description": "`content` is one of: **shipment**, **delivery**"
+      },
+      "Delivery": {
+        "type": "object",
+        "properties": {
+          "i": {
+            "$ref": "#/components/schemas/DeliveryInfo"
+          },
+          "time": {
+            "type": "string",
+            "description": "delivery time or estimate",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false,
+        "description": "google.protobuf.Timestamp created_at = 2;"
+      },
+      "DeliveryInfo": {
+        "type": "object",
+        "properties": {
+          "loc": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "mobile": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "description": "note for delivery man"
+          },
+          "pickUp": {
+            "title": "pick_up",
+            "type": "boolean"
+          },
+          "time": {
+            "type": "string",
+            "description": "wanted delivery time",
+            "format": "date-time"
+          },
+          "floor": {
+            "type": "string"
+          },
+          "door": {
+            "type": "string"
+          },
+          "stair": {
+            "type": "string"
+          },
+          "house": {
+            "type": "string",
+            "description": "house number"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeliveryZone": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "title": "display_name",
+            "type": "string",
+            "description": "name"
+          },
+          "postalCode": {
+            "title": "postal_code",
+            "type": "string",
+            "description": "todo country_code"
+          },
+          "radius": {
+            "$ref": "#/components/schemas/DeliveryZoneRadius"
+          },
+          "minPrice": {
+            "title": "min_price",
+            "type": "number",
+            "description": "incl. vat",
+            "format": "double"
+          },
+          "serviceFee": {
+            "title": "service_fee",
+            "type": "number",
+            "description": "incl. vat",
+            "format": "double"
+          },
+          "serviceFeeMax": {
+            "title": "service_fee_max",
+            "type": "number",
+            "description": "min price for free delivery",
+            "format": "double"
+          },
+          "availabilityTime": {
+            "title": "availability_time",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AvailabilityTime"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeliveryZoneRadius": {
+        "type": "object",
+        "properties": {
+          "latLng": {
+            "$ref": "#/components/schemas/LatLng"
+          },
+          "radius": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Discount": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "title": "slug",
+            "type": "string"
+          },
+          "n": {
+            "title": "display_name",
+            "type": "string"
+          },
+          "f": {
+            "title": "filters",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscountFilter"
+            }
+          },
+          "amountTotal": {
+            "title": "amount_total",
+            "type": "number",
+            "format": "double"
+          },
+          "amountPiece": {
+            "title": "amount_piece",
+            "type": "number",
+            "format": "double"
+          },
+          "percent": {
+            "type": "number",
+            "format": "double"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscountItem"
+            },
+            "description": "gift items"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiscountFilter": {
+        "type": "object",
+        "properties": {
+          "sel": {
+            "title": "selectors",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "tag or path: cat-a/cat-b/product-1"
+          },
+          "amount": {
+            "type": "number",
+            "description": "min amount",
+            "format": "double"
+          },
+          "q": {
+            "title": "quantity",
+            "type": "integer",
+            "description": "min quantity",
+            "format": "int32"
+          },
+          "deliveryZones": {
+            "title": "delivery_zones",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryZone"
+            }
+          },
+          "availabilityTime": {
+            "title": "availability_time",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AvailabilityTime"
+            }
+          },
+          "excl": {
+            "title": "exclusions",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "tag or path: cat-a/cat-b/product-1"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiscountItem": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "title": "slug",
+            "type": "string"
+          },
+          "n": {
+            "title": "name",
+            "type": "string"
+          },
+          "sel": {
+            "title": "selectors",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "tag or path: cat-a/cat-b/product-1"
+          },
+          "q": {
+            "title": "quantity",
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Disturbance": {
+        "type": "object",
+        "properties": {
+          "ts": {
+            "title": "timestamp",
+            "type": "string",
+            "description": "todo end date",
+            "format": "date-time"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "noPickup": {
+            "title": "no_pickup",
+            "type": "boolean"
+          },
+          "noDelivery": {
+            "title": "no_delivery",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Empty": {
+        "minProperties": 0,
+        "type": "object",
+        "additionalProperties": false
+      },
+      "EntryEntryType": {
+        "enum": [
+          "ENTRY_TYPE_UNSPECIFIED",
+          "ARTIKEL",
+          "CHARGE",
+          "DISCOUNT"
+        ],
+        "type": "string"
+      },
+      "Fulfillment": {
+        "type": "object",
+        "properties": {
+          "ts": {
+            "title": "timestamp",
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "description": "resource name: vendors/{vendor}/orders/{order}",
+            "format": "uri-reference",
+            "readOnly": true
+          },
+          "order": {
+            "$ref": "#/components/schemas/Order"
+          },
+          "state": {
+            "$ref": "#/components/schemas/FulfillmentState"
+          },
+          "sourcing": {
+            "$ref": "#/components/schemas/Sourcing"
+          },
+          "assembly": {
+            "$ref": "#/components/schemas/Assembly"
+          },
+          "packaging": {
+            "$ref": "#/components/schemas/Packaging"
+          },
+          "shipment": {
+            "$ref": "#/components/schemas/Shipment"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/Delivery"
+          },
+          "cancelation": {
+            "$ref": "#/components/schemas/Cancelation"
+          },
+          "settlement": {
+            "$ref": "#/components/schemas/Settlement"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FulfillmentState": {
+        "enum": [
+          "STATE_UNSPECIFIED",
+          "PENDING",
+          "RECEIVED",
+          "ACCEPTED",
+          "PROCESSING",
+          "SOURCING",
+          "SOURCED",
+          "ASSEMBLING",
+          "ASSEMBLED",
+          "PICKING",
+          "PICKED",
+          "PACKING",
+          "PACKED",
+          "PROCESSED",
+          "SHIPPING",
+          "SHIPPED",
+          "DELIVERING",
+          "DELIVERED",
+          "COMPLETING",
+          "SETTLED",
+          "COMPLETED",
+          "FAILED",
+          "EXPIRED",
+          "CANCELED",
+          "UNKNOWN"
+        ],
+        "type": "string"
+      },
+      "Identity": {
+        "type": "object",
+        "properties": {
+          "value": {},
+          "email": {
+            "type": "string"
+          },
+          "mobile": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "vendor": {
+            "$ref": "#/components/schemas/Vendor"
+          }
+        },
+        "additionalProperties": false,
+        "description": "oneof container"
+      },
+      "InfoResponse": {
+        "type": "object",
+        "properties": {
+          "motd": {
+            "type": "string",
+            "description": "message of the day",
+            "nullable": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserEntry"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LatLng": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ListOrdersResponse": {
+        "type": "object",
+        "properties": {
+          "fulfillments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fulfillment"
+            }
+          },
+          "nextPageToken": {
+            "title": "next_page_token",
+            "type": "string",
+            "description": "maybe int32 total_size = 2;"
+          },
+          "unreachable": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "unreachable https://google.aip.dev/217"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Location": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "title": "display_name",
+            "type": "string"
+          },
+          "addrLines": {
+            "title": "address_lines",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countryCode": {
+            "title": "country_code",
+            "type": "string"
+          },
+          "postalCode": {
+            "title": "postal_code",
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "formatted": {
+            "type": "string",
+            "description": "multiline postal address with name and address"
+          },
+          "latLng": {
+            "$ref": "#/components/schemas/LatLng"
+          },
+          "openHours": {
+            "title": "open_hours",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AvailabilityTime"
+            }
+          },
+          "disturbance": {
+            "$ref": "#/components/schemas/Disturbance"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Order": {
+        "required": [
+          "vn"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "uid"
+          },
+          "nr": {
+            "title": "number",
+            "type": "string",
+            "description": "order number (not unique)"
+          },
+          "cts": {
+            "title": "create_time",
+            "type": "string",
+            "format": "date-time"
+          },
+          "vn": {
+            "title": "vendor",
+            "type": "string",
+            "format": "uri-reference"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/Identity"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/DeliveryInfo"
+          },
+          "payment": {
+            "$ref": "#/components/schemas/Payment"
+          },
+          "a": {
+            "$ref": "#/components/schemas/OrderAmount"
+          },
+          "vatA": {
+            "title": "vat_a",
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            },
+            "description": "vat amounts: 0%: 2.00, 10%: 10.70, 20%: 2.55"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderLine"
+            }
+          },
+          "meta": {
+            "title": "metadata"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderAmount": {
+        "type": "object",
+        "properties": {
+          "ccy": {
+            "title": "currency",
+            "type": "string"
+          },
+          "v": {
+            "title": "value",
+            "type": "number",
+            "description": "sub total",
+            "format": "double"
+          },
+          "charges": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            },
+            "description": "double shipping_cost = 3; //shipping has vat 10 or 20 depending on products\r\ndouble discount = 4;"
+          },
+          "discounts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            },
+            "description": "onlinebonus, 10% Discount"
+          },
+          "t": {
+            "title": "total",
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderLine": {
+        "type": "object",
+        "properties": {
+          "entry": {
+            "$ref": "#/components/schemas/OrderLineEntry"
+          },
+          "addons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderLineEntry"
+            }
+          },
+          "q": {
+            "title": "quantity",
+            "type": "integer",
+            "format": "int32"
+          },
+          "vatA": {
+            "title": "vat_a",
+            "type": "number",
+            "description": "vat amount",
+            "format": "double"
+          },
+          "t": {
+            "title": "total",
+            "type": "number",
+            "description": "incl. vat",
+            "format": "double"
+          },
+          "discount": {
+            "$ref": "#/components/schemas/Discount"
+          },
+          "required": {
+            "type": "boolean",
+            "description": "the vendor is not allowed to decrease the quantity to zero"
+          },
+          "note": {
+            "type": "string",
+            "description": "note of customer"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderLineEntry": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/EntryEntryType"
+          },
+          "n": {
+            "title": "name",
+            "type": "string"
+          },
+          "desc": {
+            "title": "description",
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "description": "incl. vat",
+            "format": "double"
+          },
+          "vatP": {
+            "title": "vat_p",
+            "type": "number",
+            "description": "vat percent",
+            "format": "double"
+          },
+          "product": {
+            "type": "string",
+            "format": "uri-reference"
+          },
+          "opts": {
+            "title": "options",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductOption"
+            },
+            "description": "Product legacy_product = 14;"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderReply": {
+        "type": "object",
+        "properties": {
+          "seq": {
+            "title": "sequence",
+            "type": "integer",
+            "format": "int64"
+          },
+          "ts": {
+            "title": "timestamp",
+            "type": "string",
+            "format": "date-time"
+          },
+          "fulfillment": {
+            "$ref": "#/components/schemas/Fulfillment"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Packaging": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "string",
+            "description": "pickup time or estimate",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "ts": {
+            "title": "timestamp",
+            "type": "string",
+            "format": "date-time"
+          },
+          "sys": {
+            "title": "system",
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/PaymentState"
+          },
+          "s": {
+            "title": "sender",
+            "type": "string"
+          },
+          "r": {
+            "title": "receiver",
+            "type": "string"
+          },
+          "fid": {
+            "title": "foreign_id",
+            "type": "string"
+          },
+          "desc": {
+            "title": "description",
+            "type": "string"
+          },
+          "ccy": {
+            "title": "currency",
+            "type": "string"
+          },
+          "a": {
+            "title": "amount",
+            "type": "number",
+            "format": "double"
+          },
+          "meta": {
+            "title": "metadata"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentState": {
+        "enum": [
+          "STATE_UNSPECIFIED",
+          "PENDING",
+          "PROCESSING",
+          "PROCESSED",
+          "COMPLETING",
+          "COMPLETED",
+          "FAILED",
+          "EXPIRED",
+          "CANCELED",
+          "UNKNOWN"
+        ],
+        "type": "string"
+      },
+      "PlaceOrderRequest": {
+        "type": "object",
+        "properties": {
+          "parent": {
+            "type": "string",
+            "description": "Format: vendors/{vendor}",
+            "format": "uri-reference"
+          },
+          "order": {
+            "$ref": "#/components/schemas/Order"
+          },
+          "statusUrl": {
+            "title": "status_url",
+            "type": "string",
+            "description": "todo client"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlaceOrderResponse": {
+        "type": "object",
+        "properties": {
+          "order": {
+            "$ref": "#/components/schemas/Order"
+          },
+          "payUrl": {
+            "title": "pay_url",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "description": "todo resource name"
+      },
+      "PollOrdersResponse": {
+        "type": "object",
+        "properties": {
+          "fulfillments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fulfillment"
+            }
+          },
+          "nextPageToken": {
+            "title": "next_page_token",
+            "type": "string",
+            "description": "maybe int32 pending_count = 2;"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProcessOrderRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "the name of order to process\r\nFormat: vendors/{vendor}/orders/{order}",
+            "format": "uri-reference"
+          },
+          "sourcing": {
+            "$ref": "#/components/schemas/Sourcing"
+          },
+          "assembly": {
+            "$ref": "#/components/schemas/Assembly"
+          },
+          "packaging": {
+            "$ref": "#/components/schemas/Packaging"
+          },
+          "completed": {
+            "type": "boolean",
+            "description": "step completed"
+          }
+        },
+        "additionalProperties": false,
+        "description": "`content` is one of: **sourcing**, **assembly**, **packaging**"
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nr": {
+            "title": "number",
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "format": "uri-reference",
+            "readOnly": true
+          },
+          "n": {
+            "title": "display_name",
+            "type": "string"
+          },
+          "i": {
+            "$ref": "#/components/schemas/ProductInfo"
+          },
+          "price": {
+            "type": "number",
+            "description": "incl. vat",
+            "format": "double"
+          },
+          "vatP": {
+            "title": "vat_p",
+            "type": "number",
+            "description": "percent",
+            "format": "double"
+          },
+          "opts": {
+            "title": "options",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductOption"
+            }
+          },
+          "noInherit": {
+            "title": "no_inherit",
+            "type": "boolean",
+            "description": "do not inherit options from group"
+          },
+          "del": {
+            "title": "deleted",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductGroup": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "title": "slug",
+            "type": "string"
+          },
+          "n": {
+            "title": "name",
+            "type": "string"
+          },
+          "i": {
+            "$ref": "#/components/schemas/ProductGroupInfo"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "opts": {
+            "title": "options",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductOption"
+            }
+          },
+          "availabilityTime": {
+            "title": "availability_time",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AvailabilityTime"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "del": {
+            "title": "deleted",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductGroupInfo": {
+        "type": "object",
+        "properties": {
+          "desc": {
+            "title": "description",
+            "type": "string"
+          },
+          "sort": {
+            "title": "sort_order",
+            "type": "integer",
+            "format": "int32"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            }
+          },
+          "atts": {
+            "title": "attributes",
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductInfo": {
+        "type": "object",
+        "properties": {
+          "desc": {
+            "title": "description",
+            "type": "string"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            }
+          },
+          "atts": {
+            "title": "attributes",
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductOption": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "title": "slug",
+            "type": "string"
+          },
+          "n": {
+            "title": "name",
+            "type": "string"
+          },
+          "min": {
+            "title": "range_min",
+            "type": "integer",
+            "description": "min total selections",
+            "format": "int32"
+          },
+          "max": {
+            "title": "range_max",
+            "type": "integer",
+            "description": "max total selections",
+            "format": "int32"
+          },
+          "maxQ": {
+            "title": "range_max_quantity",
+            "type": "integer",
+            "description": "max quantity",
+            "format": "int32"
+          },
+          "free": {
+            "title": "range_free",
+            "type": "integer",
+            "description": "free count",
+            "format": "int32"
+          },
+          "vals": {
+            "title": "values",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductOptionValue"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductOptionValue": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "title": "slug",
+            "type": "string"
+          },
+          "n": {
+            "title": "name",
+            "type": "string"
+          },
+          "p": {
+            "title": "price",
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Rating": {
+        "type": "object",
+        "properties": {
+          "v": {
+            "title": "value",
+            "type": "number",
+            "format": "double"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Resource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "n": {
+            "title": "display_name",
+            "type": "string",
+            "description": "file name"
+          },
+          "type": {
+            "type": "string",
+            "description": "content type as mime"
+          },
+          "size": {
+            "type": "integer",
+            "description": "content size in bytes",
+            "format": "int32"
+          },
+          "mts": {
+            "title": "modified_at",
+            "type": "string",
+            "format": "date-time"
+          },
+          "crc32": {
+            "type": "integer",
+            "description": "hash",
+            "format": "int32"
+          },
+          "url": {
+            "type": "string",
+            "description": "content url"
+          },
+          "data": {
+            "type": "string"
+          },
+          "thumbs": {
+            "title": "thumbnails",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            },
+            "description": "resized and preview images"
+          },
+          "atts": {
+            "title": "attributes",
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            }
+          },
+          "meta": {
+            "title": "metadata"
+          },
+          "del": {
+            "title": "deleted",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false,
+        "description": "`content` is one of: **url**, **data**"
+      },
+      "Settlement": {
+        "type": "object",
+        "properties": {
+          "payment": {
+            "$ref": "#/components/schemas/Payment"
+          }
+        },
+        "additionalProperties": false,
+        "description": "google.protobuf.Timestamp created_at = 2;"
+      },
+      "Shipment": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Sourcing": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Any"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "StoreReply": {
+        "type": "object",
+        "properties": {
+          "hdrs": {
+            "title": "headers",
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            }
+          },
+          "msg": {
+            "$ref": "#/components/schemas/DataMessage"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Tenant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "s": {
+            "title": "slug",
+            "type": "string"
+          },
+          "n": {
+            "title": "display_name",
+            "type": "string"
+          },
+          "meta": {
+            "title": "metadata"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TimeOfDay": {
+        "type": "object",
+        "properties": {
+          "hours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nanos": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "n": {
+            "title": "display_name",
+            "type": "string"
+          },
+          "atts": {
+            "title": "attributes",
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            }
+          },
+          "tn": {
+            "$ref": "#/components/schemas/Tenant"
+          },
+          "meta": {
+            "title": "metadata"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserEntry": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "ipAddress": {
+            "type": "string"
+          },
+          "authenticated": {
+            "type": "boolean"
+          },
+          "scope": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Vendor": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "s": {
+            "title": "slug",
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "resource name: vendors/{vendor}",
+            "format": "uri-reference",
+            "readOnly": true
+          },
+          "n": {
+            "title": "display_name",
+            "type": "string"
+          },
+          "i": {
+            "$ref": "#/components/schemas/VendorInfo"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/Contact"
+          },
+          "loc": {
+            "title": "locations",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Location"
+            }
+          },
+          "ccy": {
+            "title": "currency",
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "description": "food, store"
+          },
+          "cats": {
+            "title": "categories",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Restaurant, Electronics, Appliances & Repair"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "productGroups": {
+            "title": "product_groups",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductGroup"
+            }
+          },
+          "deliveryZones": {
+            "title": "delivery_zones",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryZone"
+            }
+          },
+          "discounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Discount"
+            }
+          },
+          "disturbance": {
+            "$ref": "#/components/schemas/Disturbance"
+          },
+          "meta": {
+            "title": "metadata"
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorInfo": {
+        "type": "object",
+        "properties": {
+          "rating": {
+            "$ref": "#/components/schemas/Rating"
+          },
+          "desc": {
+            "title": "description",
+            "type": "string"
+          },
+          "logo": {
+            "$ref": "#/components/schemas/Resource"
+          },
+          "website": {
+            "type": "string"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            },
+            "description": "gallery images"
+          },
+          "atts": {
+            "title": "attributes",
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "oidc": {
+        "type": "openIdConnect",
+        "openIdConnectUrl": "https://auth.omas.app/realms/omas/.well-known/openid-configuration"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
+}
