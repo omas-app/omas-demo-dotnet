@@ -327,7 +327,7 @@ async Task<Fulfillment> ProcessOrder(Fulfillment fulfillment, CancellationToken 
     logger.LogInformation("order idle simulation");
 
     //delay process
-    await Task.Delay(Random.Shared.Next(5, 30), cancellationToken);
+    await Task.Delay(Random.Shared.Next(5, 30) * 1000, cancellationToken);
 
     //start processing
     {
@@ -342,7 +342,7 @@ async Task<Fulfillment> ProcessOrder(Fulfillment fulfillment, CancellationToken 
     logger.LogInformation("order processing");
 
     //delay process
-    await Task.Delay(Random.Shared.Next(5, 30), cancellationToken);
+    await Task.Delay(Random.Shared.Next(5, 30) * 1000, cancellationToken);
 
     //stop processing
     {
@@ -364,7 +364,7 @@ async Task<Fulfillment> DeliverOrder(Fulfillment fulfillment, CancellationToken 
     logger.LogInformation("order delay pickup simulation");
 
     //delay pickup
-    await Task.Delay(Random.Shared.Next(5, 30), cancellationToken);
+    await Task.Delay(Random.Shared.Next(5, 30) * 1000, cancellationToken);
 
     var now = DateTimeOffset.UtcNow;
 
@@ -384,7 +384,7 @@ async Task<Fulfillment> DeliverOrder(Fulfillment fulfillment, CancellationToken 
     logger.LogInformation("order delivering");
 
     //delay pickup
-    await Task.Delay(Random.Shared.Next(5, 30), cancellationToken);
+    await Task.Delay(Random.Shared.Next(5, 30) * 1000, cancellationToken);
 
     //order is delivered
     {
